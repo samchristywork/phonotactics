@@ -34,7 +34,26 @@ fn gen_data_set() -> (HashSet<String>, HashMap<String, HashSet<String>>) {
     (start, map)
 }
 
+fn gen_word_random() -> String {
+    let chars = "abcdefghijklmnopqrstuvwxyz";
+
+    let mut rng = rand::thread_rng();
+    let mut word = String::new();
+
+    for _ in 0..10 {
+        let c = chars.chars().choose(&mut rng).unwrap();
+        word.push(c);
+    }
+
+    word
+}
+
 pub fn foo() {
+    for _ in 0..100 {
+        let random_word = gen_word_random();
+
+        println!("{}", random_word);
+    }
 }
 
 #[cfg(test)]
