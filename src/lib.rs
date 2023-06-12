@@ -16,6 +16,20 @@ fn gen_data_set() -> (HashSet<String>, HashMap<String, HashSet<String>>) {
     for line in BufReader::new(f).lines() {
         let line = line.unwrap();
 
+        if !line.is_ascii() {
+            continue;
+        }
+
+        if line.contains("'") {
+            continue;
+        }
+
+        if line.len() < ngram_len {
+            continue;
+        }
+
+        let line = line.to_lowercase() + "$";
+
         start.insert(line[0..ngram_len].to_string());
 
         for i in (ngram_len+1)..line.len()+1 {
