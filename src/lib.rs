@@ -34,6 +34,36 @@ fn gen_data_set() -> (HashSet<String>, HashMap<String, HashSet<String>>) {
     (start, map)
 }
 
+fn gen_word_ngrams(start: &HashSet<String>, map: &HashMap<String, HashSet<String>>) -> String {
+    loop {
+        let mut word = String::new();
+
+        let mut rng = rand::thread_rng();
+        let mut key = start.iter().choose(&mut rng).unwrap().to_string();
+        word.push_str(&key);
+
+        for _ in 0..15 {
+            let set = match map.get(&key) {
+                Some(set) => set,
+                None => break,
+            };
+
+            match set.iter().choose(&mut rng) {
+                Some(value) => {
+                    word.push_str(&value);
+                    key = key[1..].to_string() + value;
+                },
+                None => break,
+            }
+        }
+
+        if word.len() > 7 && word.ends_with("$") {
+            word.pop();
+            return word;
+        }
+    }
+}
+
 fn gen_word_random() -> String {
     let chars = "abcdefghijklmnopqrstuvwxyz";
 
@@ -49,10 +79,13 @@ fn gen_word_random() -> String {
 }
 
 pub fn foo() {
+    let (start, map) = gen_data_set();
+
     for _ in 0..100 {
+        let ngram_word = gen_word_ngrams(&start, &map);
         let random_word = gen_word_random();
 
-        println!("{}", random_word);
+        println!("{} {}", ngram_word, random_word);
     }
 }
 
